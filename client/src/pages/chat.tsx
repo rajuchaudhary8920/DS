@@ -70,6 +70,8 @@ export default function Chat() {
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       if (data.aiResponse) {
+        console.log(data, data.aiResponse, "response")
+      alert(data)
         speakText(data.aiResponse); // <-- This will now work
       }
       setTranscript("");
@@ -104,15 +106,18 @@ export default function Chat() {
 
   // --- THIS FUNCTION IS MODIFIED ---
   const speakText = (text: string) => {
+          console.log("speaktest fun",text);
     const utterance = new SpeechSynthesisUtterance(text);
     
     // Function to actually speak
     const doSpeak = () => {
       const allVoices = window.speechSynthesis.getVoices();
+      
       setAvailableVoices(allVoices); // Update state for the dropdown
       
       const voice = allVoices.find((v) => v.name === selectedVoice);
       if (voice) {
+
         utterance.voice = voice;
       }
       

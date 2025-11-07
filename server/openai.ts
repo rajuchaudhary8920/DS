@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config()
 // const openai = new OpenAI({ apiKey: process.env.AI_API });
 const groq = new Groq({ apiKey: process.env.GROQ });
+
 export async function getChatResponse(
   message: string
 ): Promise<{ response: string; isSafetyAlert: boolean }> {
