@@ -2,13 +2,13 @@ import OpenAI from "openai";
 import Groq from "groq-sdk";
 
 
-const openai = new OpenAI({ apiKey: process.env.AI_API });
-// const groq = new Groq({ apiKey: process.env.GROQ });
+// const openai = new OpenAI({ apiKey: process.env.AI_API });
+const groq = new Groq({ apiKey: process.env.GROQ });
 export async function getChatResponse(
   message: string
 ): Promise<{ response: string; isSafetyAlert: boolean }> {
   try {
-    const response = await openai.chat.completions.create({
+    const response = await groq.chat.completions.create({
       messages: [
         {
           role: "system", 
