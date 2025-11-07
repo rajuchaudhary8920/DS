@@ -42,15 +42,20 @@ export default function Chat() {
     }
   }, [voiceSettings]);
 
-  useEffect(() => {
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      setAvailableVoices(voices);
-    };
+  // --- THIS useEffect IS REMOVED ---
+  // We will load voices inside the speakText function instead
+  //
+  // useEffect(() => {
+  //   const loadVoices = () => {
+  //     const voices = window.speechSynthesis.getVoices();
+  //     setAvailableVoices(voices);
+  //   };
+  //
+  //   loadVoices();
+  //   window.speechSynthesis.onvoiceschanged = loadVoices;
+  // }, []);
+  // ------------------------------------
 
-    loadVoices();
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -65,7 +70,7 @@ export default function Chat() {
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ["/api/conversations"] });
       if (data.aiResponse) {
-        speakText(data.aiResponse);
+        speakText(data.aiResponse); // <-- This will now work
       }
       setTranscript("");
       setTextInput("");
@@ -96,16 +101,35 @@ export default function Chat() {
     },
   });
 
+
+  // --- THIS FUNCTION IS MODIFIED ---
   const speakText = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
-    const voice = availableVoices.find((v) => v.name === selectedVoice);
-    if (voice) {
-      utterance.voice = voice;
+    
+    // Function to actually speak
+    const doSpeak = () => {
+      const allVoices = window.speechSynthesis.getVoices();
+      setAvailableVoices(allVoices); // Update state for the dropdown
+      
+      const voice = allVoices.find((v) => v.name === selectedVoice);
+      if (voice) {
+        utterance.voice = voice;
+      }
+      
+      utterance.pitch = voicePitch / 10;
+      utterance.rate = voiceRate / 10;
+      window.speechSynthesis.speak(utterance);
+    };
+
+    // Check if voices are loaded. If not, wait for them.
+    if (window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.onvoiceschanged = doSpeak;
+    } else {
+      doSpeak();
     }
-    utterance.pitch = voicePitch / 10;
-    utterance.rate = voiceRate / 10;
-    window.speechSynthesis.speak(utterance);
   };
+  // ------------------------------------
+
 
   const startListening = () => {
     if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
