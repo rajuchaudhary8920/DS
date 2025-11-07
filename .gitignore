@@ -5,3 +5,4 @@ server/public
 server/.env
 vite.config.ts.*
 *.tar.gz
+.test
