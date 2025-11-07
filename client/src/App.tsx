@@ -13,6 +13,8 @@ import Safety from "@/pages/safety";
 import Health from "@/pages/health";
 import SafetyMap from "@/pages/map";
 import NotFound from "@/pages/not-found";
+import { Avatar, Image } from "@radix-ui/react-avatar";
+import { AvatarImage } from "./components/ui/avatar";
 
 function Navigation() {
   const [location] = useLocation();
@@ -32,8 +34,10 @@ function Navigation() {
           <div className="flex items-center gap-8">
             <Link href="/">
               <div className="flex items-center gap-2 cursor-pointer">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-                  <Heart className="h-5 w-5 text-primary-foreground" />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                    <Avatar>
+                      <AvatarImage src="./public/favicon.png" sizes="200"/>
+                    </Avatar>
                 </div>
                 <span className="font-serif text-xl font-bold">Naari Sashaktikaran</span>
               </div>
